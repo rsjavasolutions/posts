@@ -27,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("posts/{id}")
-    public Post getAllPosts(@PathVariable Long id){
+    public Post getPostById(@PathVariable Long id){
         return postService.findPostById(id);
     }
 }
