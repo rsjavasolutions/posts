@@ -1,5 +1,7 @@
 package com.rsjava.posts.controller;
 
+import com.rsjava.posts.dto.PostDto;
+import com.rsjava.posts.dto.mapper.PostMapper;
 import com.rsjava.posts.model.Post;
 import com.rsjava.posts.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +14,17 @@ import java.util.List;
 public class PostController {
 
     private PostService postService;
+    private PostMapper postMapper;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, PostMapper postMapper) {
         this.postService = postService;
+        this.postMapper = postMapper;
     }
 
     @GetMapping("posts")
-    public List<Post> getAllPosts(@RequestParam (required = false) int page){
-        return postService.getAllPosts(page);
+    public List<PostDto> getAllPosts(@RequestParam (required = false) int page){
+        return postMapper.mapToListPostDto(postService.getAllPosts(page));
     }
 
     @GetMapping("posts/{id}")
