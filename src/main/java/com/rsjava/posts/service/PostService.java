@@ -47,12 +47,15 @@ public class PostService {
             page = 0;
         }
         List<Post> allPosts = postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE));
+
         List<Long> ids = allPosts.stream()
                 .map(post -> post.getId())
                 .collect(Collectors.toList());
+
         //SELECT * FROM EMP WHERE MGR IN (7788, 7902, 7566, 7788)
         //ZASTĘPUJE WHERE MGR = 7788 OR MGR = 7566 OR MGR = 7788
         List<Comment> comments = commentRepository.findAllByPostIdIn(ids);
+
         //do listy komentarzy, do poszczególnego komentarza przypisujemy tylko jego posty
         allPosts.forEach(post -> post.setCommentList(extractComments(comments, post.getId())));
         return allPosts;
