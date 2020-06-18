@@ -27,6 +27,11 @@ public class PostController {
         return postMapper.mapToListPostDto(postService.getAllPosts(page));
     }
 
+    @GetMapping("posts/comments")
+    public List<Post> getAllPostsWithComments(@RequestParam (required = false) int page){
+        return postService.getAllPostsWithComments(page);
+    }
+
     @GetMapping("posts/{id}")
     public Post getPostById(@PathVariable Long id){
         return postService.findPostById(id);
