@@ -6,6 +6,7 @@ import com.rsjava.posts.repository.CommentRepository;
 import com.rsjava.posts.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +25,14 @@ public class PostService {
         this.commentRepository = commentRepository;
     }
 
-    public List<Post> getAllPosts(int page) {
+    public List<Post> getAllPosts(int page, Sort.Direction sort) {
         if (page < 0 ){
             page = 0;
         }
-        return postRepository.findAllPosts(PageRequest.of(page,PAGE_SIZE));
+        return postRepository.findAllPosts(
+                PageRequest.of(page, PAGE_SIZE,
+                Sort.by(sort, "id"))
+        );
     }
 
     public Post save(Post post) {
@@ -42,11 +46,12 @@ public class PostService {
 
     //unikamy problemu N+1, tworzymy tylko dwa zapytania do bazy, jeden o posty, jeden o komentarze
     //potem przypisuję posty do danego komentarza - najbardziej optymalna metoda
-    public List<Post> getAllPostsWithComments(int page) {
+    public List<Post> getAllPostsWithComments(int page, Sort.Direction sort) {
         if (page < 0 ){
             page = 0;
         }
-        List<Post> allPosts = postRepository.findAllPosts(PageRequest.of(page, PAGE_SIZE));
+        List<Post> allPosts = postRepository.findAllPosts(
+                PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
 
         List<Long> ids = allPosts.stream()
                 .map(post -> post.getId())

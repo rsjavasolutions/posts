@@ -5,6 +5,7 @@ import com.rsjava.posts.dto.mapper.PostMapper;
 import com.rsjava.posts.model.Post;
 import com.rsjava.posts.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,13 +24,13 @@ public class PostController {
     }
 
     @GetMapping("posts")
-    public List<PostDto> getAllPosts(@RequestParam (required = false) int page){
-        return postMapper.mapToListPostDto(postService.getAllPosts(page));
+    public List<PostDto> getAllPosts(@RequestParam (required = false) int page, Sort.Direction sort){
+        return postMapper.mapToListPostDto(postService.getAllPosts(page, sort));
     }
 
     @GetMapping("posts/comments")
-    public List<Post> getAllPostsWithComments(@RequestParam (required = false) int page){
-        return postService.getAllPostsWithComments(page);
+    public List<Post> getAllPostsWithComments(@RequestParam (required = false) int page, Sort.Direction sort){
+        return postService.getAllPostsWithComments(page, sort);
     }
 
     @GetMapping("posts/{id}")
