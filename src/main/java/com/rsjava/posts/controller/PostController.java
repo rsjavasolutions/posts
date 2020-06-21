@@ -24,12 +24,12 @@ public class PostController {
     }
 
     @GetMapping("posts")
-    public List<PostDto> getAllPosts(@RequestParam (required = false) int page, Sort.Direction sort){
+    public List<PostDto> getAllPosts(@RequestParam (required = false) Integer page, Sort.Direction sort){
         return postMapper.mapToListPostDto(postService.getAllPosts(page, sort));
     }
 
     @GetMapping("posts/comments")
-    public List<Post> getAllPostsWithComments(@RequestParam (required = false) int page, Sort.Direction sort){
+    public List<Post> getAllPostsWithComments(@RequestParam (required = false) Integer page, Sort.Direction sort){
         return postService.getAllPostsWithComments(page, sort);
     }
 

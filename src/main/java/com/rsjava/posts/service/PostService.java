@@ -25,13 +25,13 @@ public class PostService {
         this.commentRepository = commentRepository;
     }
 
-    public List<Post> getAllPosts(int page, Sort.Direction sort) {
-        if (page < 0 ){
-            page = 0;
-        }
+    public List<Post> getAllPosts(Integer page, Sort.Direction sort) {
+        page = getValidatedPageNumber(page);
+        sort = getValidatedSortDirection(sort);
+
         return postRepository.findAllPosts(
                 PageRequest.of(page, PAGE_SIZE,
-                Sort.by(sort, "id"))
+                        Sort.by(sort, "id"))
         );
     }
 
@@ -39,17 +39,18 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post findPostById(Long id){
+    public Post findPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow();
     }
 
     //unikamy problemu N+1, tworzymy tylko dwa zapytania do bazy, jeden o posty, jeden o komentarze
     //potem przypisuję posty do danego komentarza - najbardziej optymalna metoda
-    public List<Post> getAllPostsWithComments(int page, Sort.Direction sort) {
-        if (page < 0 ){
-            page = 0;
-        }
+
+    public List<Post> getAllPostsWithComments(Integer page, Sort.Direction sort) {
+        page = getValidatedPageNumber(page);
+        sort = getValidatedSortDirection(sort);
+
         List<Post> allPosts = postRepository.findAllPosts(
                 PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
 
@@ -65,11 +66,28 @@ public class PostService {
         allPosts.forEach(post -> post.setCommentList(extractComments(comments, post.getId())));
         return allPosts;
     }
-
     //wyciągamy z listy komentarzy (w której są tylko komentarze z postów z danej strony) komentarze do danego posta
+
     private List<Comment> extractComments(List<Comment> comments, Long id) {
         return comments.stream()
                 .filter(comment -> comment.getPost().getId() == id)
                 .collect(Collectors.toList());
+    }
+
+    //najpierw sprawdzamy czy page jest równe null lub czy page jest mniejsze od zera
+    // jak tak to page ma domyślnie 0;
+    private Integer getValidatedPageNumber(Integer page) {
+        if (page == null || page < 0) {
+            page = 0;
+        }
+        return page;
+    }
+
+    //jeżeli sort direction == null to daje mu defaultowo wartość ASC czyli rosnącą
+    private Sort.Direction getValidatedSortDirection(Sort.Direction sortDirection){
+        if (sortDirection == null){
+            sortDirection = Sort.Direction.ASC;
+        }
+        return sortDirection;
     }
 }
