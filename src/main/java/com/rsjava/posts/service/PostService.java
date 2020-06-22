@@ -87,8 +87,8 @@ public class PostService {
     }
 
     //jeżeli sort direction == null to daje mu defaultowo wartość ASC czyli rosnącą
-    private Sort.Direction getValidatedSortDirection(Sort.Direction sortDirection){
-        if (sortDirection == null){
+    private Sort.Direction getValidatedSortDirection(Sort.Direction sortDirection) {
+        if (sortDirection == null) {
             sortDirection = Sort.Direction.ASC;
         }
         return sortDirection;
@@ -100,10 +100,23 @@ public class PostService {
 
     public ResponseEntity<Post> deletePostById(Long id) {
         Optional<Post> optionalBook = postRepository.findById(id);
-        if (optionalBook.isPresent()){
+        if (optionalBook.isPresent()) {
             postRepository.delete(optionalBook.get());
-            return  new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<Post> updatePostById(Long id, Post post) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if (optionalPost.isPresent()) {
+            optionalPost.get().setTitle(post.getTitle());
+            optionalPost.get().setContent(post.getContent());
+            optionalPost.get().setCreated(post.getCreated());
+            optionalPost.get().setCommentList(post.getCommentList());
+            postRepository.save(optionalPost.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
