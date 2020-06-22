@@ -100,12 +100,10 @@ public class PostService {
 
     public ResponseEntity<Post> deletePostById(Long id) {
         Optional<Post> optionalBook = postRepository.findById(id);
-
         if (optionalBook.isPresent()){
             postRepository.delete(optionalBook.get());
             return  new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
