@@ -7,9 +7,12 @@ import com.rsjava.posts.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,5 +92,20 @@ public class PostService {
             sortDirection = Sort.Direction.ASC;
         }
         return sortDirection;
+    }
+
+    public Post addPost(Post post) {
+        return postRepository.save(post);
+    }
+
+    public ResponseEntity<Post> deletePostById(Long id) {
+        Optional<Post> optionalBook = postRepository.findById(id);
+
+        if (optionalBook.isPresent()){
+            postRepository.delete(optionalBook.get());
+            return  new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
